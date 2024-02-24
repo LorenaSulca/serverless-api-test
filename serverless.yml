@@ -1,0 +1,89 @@
+service: serverless-swapi 
+frameworkVersion: '3'
+
+custom:
+  tableName: 'books-table-${sls:stage}'
+
+provider:
+  name: aws
+  runtime: nodejs16.x
+  region: 'us-east-2'
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:Query
+            - dynamodb:Scan
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+          Resource:
+            - Fn::GetAtt: [ BooksTable, Arn ]
+  environment:
+    BOOKS_TABLE: ${self:custom.tableName}
+
+resources:
+  Resources:
+    BooksTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: bookId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: bookId
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:custom.tableName}
+
+package:
+  individually: true
+  patterns:
+    - '!./**'
+
+functions:
+  storeBook:
+    handler: src/functions/storeBook/storeBook.storeBook
+    events:
+      - httpApi:
+          path: /books
+          method: post
+    package:
+      patterns:
+        - src/functions/storeBook/**
+
+  getAllBooks:
+    handler: src/functions/getAllBooks/getAllBooks.getAllBooks
+    events:
+      - httpApi:
+          path: /books
+          method: get
+    package:
+      patterns:
+        - src/functions/getAllBooks/**
+  getData:
+    handler: src/functions/getData/getData.getData
+    events:
+      - httpApi:
+          path: /swapi/people/{id}
+          method: get
+      - httpApi:
+          path: /books/{id}
+          method: get
+    package:
+      patterns:
+        - src/functions/getData/**
+  deleteBookById:
+    handler: src/functions/deleteBookById/deleteBookById.deleteBookById
+    events:
+      - httpApi:
+          path: /books/{id}
+          method: delete
+    package:
+      patterns:
+        - src/functions/deleteBookById/*
+plugins:
+  - serverless-esbuild
+  - serverless-offline
