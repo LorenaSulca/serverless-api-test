@@ -1,0 +1,231 @@
+openapi: "3.0.1"
+info:
+  title: "serverless-swapi"
+  version: "2024-02-23 16:58:36UTC"
+servers:
+- url: "https://lmnev1vjb9.execute-api.us-east-2.amazonaws.com"
+paths:
+  /books/{id}:
+    get:
+      tags: [
+      "Endpoints"
+      ]
+      summary: Get a book by Id from a DynamoDB table
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: Id of the book to retrieve
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Book retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  item:
+                    type: object
+                    properties:
+                      bookId:
+                        type: string
+                      title:
+                        type: string
+                      author:
+                        type: string
+                      publicationYear:
+                        type: number
+                      genre:
+                        type: string
+                      pageCount:
+                        type: number
+                      createdAt:
+                        type: string
+                        format: date-time
+    delete:
+      tags: [
+      "Endpoints"
+      ]
+      summary: Delete a book by Id from a DynamoDB table
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID of the book to delete
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Book deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Book deleted successfully"
+  /books:
+    get:
+      tags: [
+      "Endpoints"
+      ]
+      summary: Get all books from a DynamoDB table
+      responses:
+        '200':
+          description: Books retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        bookId:
+                          type: string
+                        title:
+                          type: string
+                        author:
+                          type: string
+                        publicationYear:
+                          type: number
+                        genre:
+                          type: string
+                        pageCount:
+                          type: number
+                        createdAt:
+                          type: string
+                          format: date-time
+
+    post:
+      tags: [
+      "Endpoints"
+      ]
+      summary: Create a new book on a DynamoDB table
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                author:
+                  type: string
+                genre:
+                  type: string
+                publicationYear:
+                  type: number
+                pageCount:
+                  type: number
+      responses:
+        '200':
+          description: Book created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      storedBook:
+                        type: object
+                        properties:
+                          title:
+                            type: string
+                          author:
+                            type: string
+                          genre:
+                            type: string
+                          publicationYear:
+                            type: number
+                          pageCount:
+                            type: number
+                  message:
+                    type: string
+                    example: "Book saved successfully"
+  /swapi/people/{id}:
+    get:
+      tags: [
+      "Endpoints"
+      ]
+      summary: Get a people object by ID from SWAPI
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID of the people to retrieve
+          schema:
+            type: string
+      responses:
+        '200':
+          description: People retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  item:
+                    type: object
+                    properties:
+                      peopleId:
+                        type: string
+                      nombre:
+                        type: string
+                      altura:
+                        type: string
+                      masa:
+                        type: string
+                      color_pelo:
+                        type: string
+                      color_piel:
+                        type: string
+                      color_ojos:
+                        type: string
+                      ano_nacimiento:
+                        type: string
+                      genero:
+                        type: string
+                      mundo:
+                        type: string
+                      peliculas:
+                        type: array
+                        items:
+                          type: string
+                      especies:
+                        type: array
+                        items:
+                          type: string
+                      vehiculos:
+                        type: array
+                        items:
+                          type: string
+                      naves:
+                        type: array
+                        items:
+                          type: string
+                      creado:
+                        type: string
+                        format: date-time
+                      editado:
+                        type: string
+                        format: date-time
+                      enlace:
+                        type: string
+        '404':
+          description: No response data from SWAPI
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "No response data from SWAPI"
